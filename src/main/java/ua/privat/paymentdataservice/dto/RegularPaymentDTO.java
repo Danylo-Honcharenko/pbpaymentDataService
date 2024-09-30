@@ -17,5 +17,6 @@ public class RegularPaymentDTO {
     private Integer okpoRecipient;
     private String recipientName;
     private String writeOffPeriod;
+    private String writeOffDate;
     private Integer paymentAmount;
 }

@@ -27,8 +27,8 @@ public class RegularPaymentRepositoryImpl implements RegularPaymentRepository {
     @Override
     public int create(RegularPayment regularPayment) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        namedParameterJdbcTemplate.update("INSERT INTO regular_payments (payer_full_name, IIN, card_number, recipients_settlement_account, MFO_recipient, OKPO_recipient, recipient_name, write_off_period, payment_amount)" +
-                "VALUES (:payer_full_name, :IIN, :card_number, :recipients_settlement_account, :MFO_recipient, :OKPO_recipient, :recipient_name, :write_off_period, :payment_amount)", new MapSqlParameterSource()
+        namedParameterJdbcTemplate.update("INSERT INTO regular_payments (payer_full_name, IIN, card_number, recipients_settlement_account, MFO_recipient, OKPO_recipient, recipient_name, write_off_period, write_off_date, payment_amount)" +
+                "VALUES (:payer_full_name, :IIN, :card_number, :recipients_settlement_account, :MFO_recipient, :OKPO_recipient, :recipient_name, :write_off_period, :write_off_date, :payment_amount)", new MapSqlParameterSource()
                 .addValue("payer_full_name", regularPayment.getPayerFullName())
                 .addValue("IIN", regularPayment.getIin())
                 .addValue("card_number", regularPayment.getCardNumber())
@@ -36,14 +36,15 @@ public class RegularPaymentRepositoryImpl implements RegularPaymentRepository {
                 .addValue("MFO_recipient", regularPayment.getMfoRecipient())
                 .addValue("OKPO_recipient", regularPayment.getOkpoRecipient())
                 .addValue("recipient_name", regularPayment.getRecipientName())
-                .addValue("write_off_period", Timestamp.valueOf(regularPayment.getWriteOffPeriod()))
+                .addValue("write_off_period", regularPayment.getWriteOffPeriod())
+                .addValue("write_off_date", Timestamp.valueOf(regularPayment.getWriteOffDate()))
                 .addValue("payment_amount", regularPayment.getPaymentAmount()), keyHolder, new String[]{"id"});
         return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
     @Override
     public int update(Long id, RegularPayment regularPayment) {
-        return namedParameterJdbcTemplate.update("UPDATE regular_payments SET payer_full_name = :payer_full_name, IIN = :IIN, card_number = :card_number, recipients_settlement_account = :recipients_settlement_account, MFO_recipient = :MFO_recipient, OKPO_recipient = :OKPO_recipient, recipient_name = :recipient_name, write_off_period = :write_off_period, payment_amount = :payment_amount WHERE id = :id", new MapSqlParameterSource()
+        return namedParameterJdbcTemplate.update("UPDATE regular_payments SET payer_full_name = :payer_full_name, IIN = :IIN, card_number = :card_number, recipients_settlement_account = :recipients_settlement_account, MFO_recipient = :MFO_recipient, OKPO_recipient = :OKPO_recipient, recipient_name = :recipient_name, write_off_period = :write_off_period, write_off_date = :write_off_date, payment_amount = :payment_amount WHERE id = :id", new MapSqlParameterSource()
                 .addValue("payer_full_name", regularPayment.getPayerFullName())
                 .addValue("IIN", regularPayment.getIin())
                 .addValue("card_number", regularPayment.getCardNumber())
@@ -51,7 +52,8 @@ public class RegularPaymentRepositoryImpl implements RegularPaymentRepository {
                 .addValue("MFO_recipient", regularPayment.getMfoRecipient())
                 .addValue("OKPO_recipient", regularPayment.getOkpoRecipient())
                 .addValue("recipient_name", regularPayment.getRecipientName())
-                .addValue("write_off_period", Timestamp.valueOf(regularPayment.getWriteOffPeriod()))
+                .addValue("write_off_period", regularPayment.getWriteOffPeriod())
+                .addValue("write_off_date", Timestamp.valueOf(regularPayment.getWriteOffDate()))
                 .addValue("payment_amount", regularPayment.getPaymentAmount())
                 .addValue("id", id));
     }

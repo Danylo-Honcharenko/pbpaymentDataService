@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.privat.paymentdataservice.DateHelper;
 import ua.privat.paymentdataservice.dto.RegularPaymentDTO;
 import ua.privat.paymentdataservice.dto.convertor.RegularPaymentConvertor;
 import ua.privat.paymentdataservice.exceptions.*;
@@ -19,10 +20,13 @@ public class RegularPaymentController {
 
     private final RegularPaymentService regularPaymentService;
     private final RegularPaymentConvertor regularPaymentConvertor;
+    private final DateHelper dateHelper;
 
     @PostMapping("/create-regular-payment")
     public ResponseEntity<RegularPaymentDTO> createRegularPayment(@RequestBody RegularPaymentDTO regularPaymentDTO) {
-        RegularPayment regularPayment = regularPaymentService.save(regularPaymentConvertor.convertToModel(regularPaymentDTO))
+        RegularPayment regularPaymentWithPrepareDate = dateHelper
+                .prepareDate(regularPaymentConvertor.convertToModel(regularPaymentDTO));
+        RegularPayment regularPayment = regularPaymentService.save(regularPaymentWithPrepareDate)
                 .orElseThrow(RegularPaymentWasNotSavedException::new);
         return ResponseEntity.status(HttpStatus.CREATED).body(regularPaymentConvertor.convertToDTO(regularPayment));
     }
@@ -72,5 +76,16 @@ public class RegularPaymentController {
                 .orElseThrow(() -> new RegularPaymentNotFoundException("Regular payment with id " + id + " not found!"));
         regularPaymentService.delete(id);
         return ResponseEntity.ok("The regular payment was deleted successfully!");
+    }
+
+    @PatchMapping("/update-write-off-date/{id}")
+    public ResponseEntity<RegularPaymentDTO> updateWriteOffDate(@PathVariable Long id) {
+        RegularPayment foundRegularPayment = regularPaymentService.findById(id)
+                .orElseThrow(() -> new RegularPaymentNotFoundException("Regular payment with id " + id + " not found!"));
+        RegularPayment regularPaymentWithUpdatedDate = dateHelper.prepareDate(foundRegularPayment);
+        RegularPayment regularPayment = regularPaymentService
+                .update(id, regularPaymentWithUpdatedDate)
+                .orElseThrow(RegularPaymentNotUpdateException::new);
+        return ResponseEntity.status(HttpStatus.OK).body(regularPaymentConvertor.convertToDTO(regularPayment));
     }
 }

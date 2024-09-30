@@ -20,7 +20,8 @@ public class RegularPaymentMapper implements RowMapper<RegularPayment> {
                 .mfoRecipient(rs.getInt("mfo_recipient"))
                 .okpoRecipient(rs.getInt("okpo_recipient"))
                 .recipientName(rs.getString("recipient_name"))
-                .writeOffPeriod(String.valueOf(rs.getTimestamp("write_off_period")))
+                .writeOffPeriod(rs.getString("write_off_period"))
+                .writeOffDate(String.valueOf(rs.getTimestamp("write_off_date")))
                 .paymentAmount(rs.getInt("payment_amount"))
                 .build();
     }

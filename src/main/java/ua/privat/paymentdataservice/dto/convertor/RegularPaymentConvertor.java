@@ -21,6 +21,7 @@ public class RegularPaymentConvertor implements Converter<RegularPayment, Regula
                 .okpoRecipient(regularPaymentDTO.getOkpoRecipient())
                 .recipientName(regularPaymentDTO.getRecipientName())
                 .writeOffPeriod(regularPaymentDTO.getWriteOffPeriod())
+                .writeOffDate(regularPaymentDTO.getWriteOffDate())
                 .paymentAmount(regularPaymentDTO.getPaymentAmount())
                 .build();
     }
@@ -37,6 +38,7 @@ public class RegularPaymentConvertor implements Converter<RegularPayment, Regula
                 .okpoRecipient(regularPayment.getOkpoRecipient())
                 .recipientName(regularPayment.getRecipientName())
                 .writeOffPeriod(regularPayment.getWriteOffPeriod())
+                .writeOffDate(regularPayment.getWriteOffDate())
                 .paymentAmount(regularPayment.getPaymentAmount())
                 .build();
     }

@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component;
 import ua.privat.paymentdataservice.dto.RegularPaymentDTO;
 import ua.privat.paymentdataservice.models.RegularPayment;
 
-import java.sql.Timestamp;
-
 @Component
 public class RegularPaymentConvertor implements Converter<RegularPayment, RegularPaymentDTO> {
 

@@ -43,19 +43,13 @@ public class DateHelper {
             calendar.setTime(currentDate);
         }
 
-        // Minutes
-        if (position == 0) {
-            calendar.add(Calendar.MINUTE, Integer.parseInt(periodFragments[position]));
-        }
-
-        // Times
-        if (position == 1) {
-            calendar.add(Calendar.HOUR, Integer.parseInt(periodFragments[position]));
-        }
-
-        // Days
-        if (position == 2) {
-            calendar.add(Calendar.DATE, Integer.parseInt(periodFragments[position]));
+        switch (position) {
+            // Minutes
+            case 0 -> calendar.add(Calendar.MINUTE, Integer.parseInt(periodFragments[position]));
+            // Times
+            case 1 -> calendar.add(Calendar.HOUR, Integer.parseInt(periodFragments[position]));
+            // Days
+            case 2 -> calendar.add(Calendar.DATE, Integer.parseInt(periodFragments[position]));
         }
 
         return new Timestamp(calendar.getTimeInMillis());

@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.privat.paymentdataservice.dto.WiringDTO;
-import ua.privat.paymentdataservice.dto.convertor.WiringConverter;
 import ua.privat.paymentdataservice.exceptions.*;
-import ua.privat.paymentdataservice.models.Wiring;
-import ua.privat.paymentdataservice.services.RegularPaymentService;
-import ua.privat.paymentdataservice.services.WiringService;
+import ua.privat.paymentdataservice.services.impl.RegularPaymentImpl;
+import ua.privat.paymentdataservice.services.impl.WiringImpl;
+import ua.privat.utils.dto.WiringDTO;
+import ua.privat.utils.dto.convertor.WiringConverter;
+import ua.privat.utils.models.Wiring;
 
 import java.util.List;
 
@@ -18,15 +18,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WiringController {
 
-    private final WiringService wiringService;
+    private final WiringImpl wiringService;
     private final WiringConverter wiringConverter;
-    private final RegularPaymentService regularPaymentService;
+    private final RegularPaymentImpl regularPaymentImpl;
 
     @PostMapping("/create-wiring")
     public ResponseEntity<WiringDTO> createWiring(@RequestBody WiringDTO wiringDTO) {
         Wiring convertedWiring = wiringConverter.convertToModel(wiringDTO);
         Long regularPaymentId = convertedWiring.getPaymentInstructionsId();
-        regularPaymentService.findById(regularPaymentId)
+        regularPaymentImpl.findById(regularPaymentId)
                 .orElseThrow(() -> new RegularPaymentNotFoundException("Regular payment with id " + regularPaymentId + " not found!"));
         Wiring wiring = wiringService.save(convertedWiring)
                 .orElseThrow(WiringNotSaveException::new);

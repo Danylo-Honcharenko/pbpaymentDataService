@@ -1,7 +1,7 @@
 package ua.privat.paymentdataservice;
 
 import org.springframework.stereotype.Component;
-import ua.privat.paymentdataservice.models.RegularPayment;
+import ua.privat.utils.models.RegularPayment;
 
 import java.sql.Timestamp;
 import java.util.Calendar;

@@ -1,10 +1,18 @@
 package ua.privat.paymentdataservice.repository.dao;
 
-import ua.privat.paymentdataservice.models.Wiring;
+import ua.privat.utils.models.Wiring;
 
 import java.util.List;
 
-@org.springframework.stereotype.Repository
+/**
+ * Интерфейс проводок - результат списания
+ */
 public interface WiringRepository extends Repository<Wiring> {
+    /**
+     * Получить проводку по ID платежа
+     *
+     * @param paymentId ID платежа
+     * @return List<Wiring> найденные платежи
+     */
     List<Wiring> getWiringByPaymentId(Long paymentId);
 }

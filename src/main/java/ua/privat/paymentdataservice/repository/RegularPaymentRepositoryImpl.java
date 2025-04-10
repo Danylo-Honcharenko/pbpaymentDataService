@@ -5,12 +5,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
-import ua.privat.paymentdataservice.models.RegularPayment;
 import ua.privat.paymentdataservice.repository.dao.RegularPaymentRepository;
 import ua.privat.paymentdataservice.repository.mappers.RegularPaymentMapper;
+import ua.privat.utils.models.RegularPayment;
 
 import java.sql.Timestamp;
 import java.util.List;

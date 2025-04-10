@@ -7,6 +7,10 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
+/**
+ * Конфигурация базы данных
+ *
+ */
 @Configuration
 public class SpringJdbcConfig {
 

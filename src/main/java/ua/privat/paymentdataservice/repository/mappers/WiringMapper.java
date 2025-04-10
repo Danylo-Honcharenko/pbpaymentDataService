@@ -1,7 +1,7 @@
 package ua.privat.paymentdataservice.repository.mappers;
 
 import org.springframework.jdbc.core.RowMapper;
-import ua.privat.paymentdataservice.models.Wiring;
+import ua.privat.utils.models.Wiring;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

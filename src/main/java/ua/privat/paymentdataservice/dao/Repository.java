@@ -1,4 +1,6 @@
-package ua.privat.paymentdataservice.repository.dao;
+package ua.privat.paymentdataservice.dao;
+
+import ua.privat.paymentdataservice.entity.Wiring;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,16 +17,15 @@ public interface Repository<M> {
      * @param model модель
      * @return int количество затронутых столбцов
      */
-    int create(M model);
+    Long create(M model);
 
     /**
      * Обновить модель
      *
-     * @param id ID модели
      * @param model модель
      * @return int количество затронутых столбцов
      */
-    int update(Long id, M model);
+    int update(M model);
 
     /**
      * Удаление модели
@@ -39,7 +40,7 @@ public interface Repository<M> {
      * @param id ID модели
      * @return Optional<M> найденная модель
      */
-    Optional<M> getById(Long id);
+    List<M> getById(Long id);
 
     /**
      * Получить все модели

@@ -1,26 +1,26 @@
-package ua.privat.paymentdataservice.repository.dao;
+package ua.privat.paymentdataservice.dao;
 
-import ua.privat.utils.models.RegularPayment;
+import ua.privat.paymentdataservice.entity.RegularPaymentInstructions;
 
 import java.util.List;
 
 /**
  * Репозиторий регулярных платежей
  */
-public interface RegularPaymentRepository extends Repository<RegularPayment> {
+public interface RegularPaymentInstructionsDaoI extends Repository<RegularPaymentInstructions> {
     /**
      * Получить регулярные платежи по ІІН
      *
-     * @param INN ІНН
+     * @param inn ІНН
      * @return List<RegularPayment> регулярные платежи
      */
-    List<RegularPayment> getByINN(Long INN);
+    List<RegularPaymentInstructions> getByINN(String inn);
 
     /**
      * Получить регулярные платежи по ОКПО
      *
-     * @param OKPO ОКПО
+     * @param okpo ОКПО
      * @return List<RegularPayment> регулярные платежи
      */
-    List<RegularPayment> getByOKPO(Long OKPO);
+    List<RegularPaymentInstructions> getByOKPO(String okpo);
 }

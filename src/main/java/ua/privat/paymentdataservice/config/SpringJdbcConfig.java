@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 
 /**
  * Конфигурация базы данных
- *
  */
 @Configuration
 public class SpringJdbcConfig {
@@ -23,7 +22,7 @@ public class SpringJdbcConfig {
     @Value("${db.password}")
     private String password;
 
-    @Bean
+    @Bean("dbConnect")
     public DataSource psqlDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(driverClassName);

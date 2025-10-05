@@ -4,78 +4,82 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.privat.paymentdataservice.exceptions.*;
-import ua.privat.paymentdataservice.services.impl.RegularPaymentImpl;
-import ua.privat.paymentdataservice.services.impl.WiringImpl;
-import ua.privat.utils.dto.WiringDTO;
-import ua.privat.utils.dto.convertor.WiringConverter;
-import ua.privat.utils.models.Wiring;
+import ua.privat.clientlib.http.request.WiringRequest;
+import ua.privat.clientlib.http.response.WiringResponse;
+import ua.privat.paymentdataservice.services.impl.WiringService;
 
 import java.util.List;
 
+/**
+ * Контроллер проводок по регулярным платежам
+ */
 @RestController
 @RequestMapping("api")
 @RequiredArgsConstructor
 public class WiringController {
+    // Сервис для работы с проводками
+    private final WiringService wiringService;
 
-    private final WiringImpl wiringService;
-    private final WiringConverter wiringConverter;
-    private final RegularPaymentImpl regularPaymentImpl;
-
+    /**
+     * Создать проводку
+     *
+     * @param wiringRequest запрос
+     * @return ResponseEntity<Long> ответ API
+     */
     @PostMapping("/create-wiring")
-    public ResponseEntity<WiringDTO> createWiring(@RequestBody WiringDTO wiringDTO) {
-        Wiring convertedWiring = wiringConverter.convertToModel(wiringDTO);
-        Long regularPaymentId = convertedWiring.getPaymentInstructionsId();
-        regularPaymentImpl.findById(regularPaymentId)
-                .orElseThrow(() -> new RegularPaymentNotFoundException("Regular payment with id " + regularPaymentId + " not found!"));
-        Wiring wiring = wiringService.save(convertedWiring)
-                .orElseThrow(WiringNotSaveException::new);
-        return ResponseEntity.status(HttpStatus.CREATED).body(wiringConverter.convertToDTO(wiring));
+    public ResponseEntity<Long> createWiring(@RequestBody WiringRequest wiringRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.wiringService.create(wiringRequest));
     }
 
+    /**
+     * Получить проводку по ID
+     *
+     * @param id ID проводки
+     * @return ResponseEntity<WiringResponse> ответ API
+     */
     @GetMapping("/wiring/{id}")
-    public ResponseEntity<WiringDTO> getWiring(@PathVariable Long id) {
-        Wiring wiring = wiringService.findById(id)
-                .orElseThrow(WiringNotFoundException::new);
-        return ResponseEntity.status(HttpStatus.OK).body(wiringConverter.convertToDTO(wiring));
+    public ResponseEntity<List<WiringResponse>> getWiring(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.wiringService.findById(id));
     }
 
+    /**
+     * Получить все проводки
+     *
+     * @return ResponseEntity<List<WiringResponse>> ответ API
+     */
     @GetMapping("/wiring")
-    public ResponseEntity<List<Wiring>> getAllWiring() {
-        List<Wiring> wiringList = wiringService.findAll();
-        if (wiringList.isEmpty()) throw new NoWiringInDBException();
-        return ResponseEntity.status(HttpStatus.OK).body(wiringList);
+    public ResponseEntity<List<WiringResponse>> getAllWiring() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.wiringService.findAll());
     }
 
+    /**
+     * Получить все проводки по платежу
+     *
+     * @param paymentId ID платежа
+     * @return ResponseEntity<List<WiringResponse>> ответ API
+     */
     @GetMapping("/wiring/payment-id/{paymentId}")
-    public ResponseEntity<List<Wiring>> getListWiringByPayment(@PathVariable Long paymentId) {
-        List<Wiring> wiringList = wiringService.findWiringByPaymentId(paymentId);
-        if (wiringList.isEmpty()) throw new WiringByPaymentIdNotFoundException();
-        return ResponseEntity.status(HttpStatus.OK).body(wiringList);
+    public ResponseEntity<List<WiringResponse>> getListWiringByPayment(@PathVariable Long paymentId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.wiringService.findWiringByPaymentId(paymentId));
     }
 
-    @PatchMapping("/update-wiring/{id}")
-    public ResponseEntity<WiringDTO> update(@PathVariable Long id, @RequestBody WiringDTO wiringDTO) {
-        Wiring wiringOld = wiringService.findById(id)
-                .orElseThrow(WiringNotFoundException::new);
-        Wiring wiring = wiringService
-                .update(id, wiringConverter.convertToModel(wiringDTO))
-                .orElseThrow(WiringNotUpdatedException::new);
-        wiring.setId(wiringOld.getId());
-        return ResponseEntity.status(HttpStatus.OK).body(wiringConverter.convertToDTO(wiring));
+    /**
+     * Обновить проводку по ID
+     *
+     * @param wiringRequest запрос
+     * @return ResponseEntity<WiringResponse> ответ API
+     */
+    @PatchMapping("/update-wiring")
+    public ResponseEntity<WiringResponse> update(@RequestBody WiringRequest wiringRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.wiringService.update(wiringRequest));
     }
 
-    @PatchMapping("/update-wiring-status")
-    public ResponseEntity<WiringDTO> reverseWiring(@RequestParam Long id, @RequestParam String status) {
-        Wiring wiringOld = wiringService.findById(id)
-                .orElseThrow(WiringNotFoundException::new);
-        wiringOld.setStatus(status);
-        Wiring wiring = wiringService
-                .update(id, wiringOld)
-                .orElseThrow(WiringNotUpdatedException::new);
-        return ResponseEntity.status(HttpStatus.OK).body(wiringConverter.convertToDTO(wiring));
-    }
-
+    /**
+     * Удалить проводку
+     *
+     * @param id ID проводки
+     * @return ResponseEntity<String> ответ API
+     */
     @DeleteMapping("/delete-wiring/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         wiringService.delete(id);
